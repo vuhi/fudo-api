@@ -1,19 +1,13 @@
 const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const dbConnect = require('./db/db.connection');
 const { PORT, CONNECTION_STRING } = require('./utils/config');
-
-const recipeRoutes = require('./routes/recipe.routes');
+require('express-async-errors');
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(morgan('dev'));
 
-dbConnect(CONNECTION_STRING);
+// SET UP ROUTES
+require('./routes/routes')(app);
 
-app.use('/api/recipes', recipeRoutes);
+// SET UP DB CONNECTION
+require('./db/db.connection')(CONNECTION_STRING);
 
 app.listen(PORT, () => console.log(`Server running in [${process.env.NODE_ENV}] mode on port: ${PORT}`));

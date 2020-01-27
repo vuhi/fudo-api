@@ -90,4 +90,6 @@ config.env
 
 .idea/
 
+db/seeder/*
+
 
