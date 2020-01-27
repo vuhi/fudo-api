@@ -1,46 +1,57 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const { OBJECT_ID_REG, HEX_COLOR_REG } = require('../utils/helpers.func');
 
-const colorValidateObject = {
-  validator: (v) => v.length === 7 && v[0] === '#',
-  message: 'color must start with # & has 7 characters'
-};
-
-module.exports.TagColor = mongoose.model('TagColor', mongoose.Schema({
+module.exports.TagColor = mongoose.model('TagColor', new mongoose.Schema({
   name: {
     type: String,
-    require: [true, 'please add tag\'s colorName'],
+    required: [true, 'please add tag\'s colorName'],
     trim: true,
-    maxLength: [20, 'tag\'s colorName cannot be more than 20']
+    maxlength: [20, 'tag\'s colorName cannot be more than 20']
   },
   background: {
     type: String,
-    require: [true, 'please add tag\'s background color'],
-    validate: colorValidateObject
+    required: [true, 'please add tag\'s background color'],
+    match: [
+      HEX_COLOR_REG,
+      'color must start with # & has 7 characters'
+    ]
   },
   text: {
     type: String,
-    require: [true, 'please add tag\'s text color'],
-    validate: colorValidateObject
+    required: [true, 'please add tag\'s text color'],
+    match: [
+      HEX_COLOR_REG,
+      'color must start with # & has 7 characters'
+    ]
   }
 }));
 
 module.exports.tagColorValidator = Joi.object({
-  _id: Joi.string(),
-  name: Joi.string().required().max(20).required(),
-  background: Joi.string().required().max(7).regex(/^#[A-Fa-f0-9]{6}$/),
-  text: Joi.string().required().max(7).regex(/^#[A-Fa-f0-9]{6}$/)
+  _id: Joi.string()
+    .regex(OBJECT_ID_REG).message('id should be a valid object id'),
+  name: Joi.string().required().max(20),
+  background: Joi.string().required().max(7)
+    .regex(HEX_COLOR_REG).message('"background" should be a hex color'),
+  text: Joi.string().required().max(7)
+    .regex(HEX_COLOR_REG).message('"text" should be a hex color')
 });
 
-module.exports.tagSchema = mongoose.Schema({
+module.exports.TagSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, 'Please add tag name'],
+    required: [true, 'Please add tag name'],
     trim: true,
-    maxLength: [15, 'tag\'s name cannot be more than 15']
+    maxlength: [15, 'tag\'s name cannot be more than 15']
   },
   color: {
     type: mongoose.Schema.Types.ObjectID,
     ref: 'TagColor'
   }
 }, { _id: false });
+
+module.exports.tagValidator = Joi.object({
+  name: Joi.string().required().max(15).label('tag\'s name'),
+  color: Joi.string().required().label('tag\'s color')
+    .regex(OBJECT_ID_REG).message('tag color should be a valid object id')
+});
