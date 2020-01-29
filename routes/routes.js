@@ -4,8 +4,6 @@ const morgan = require('morgan');
 const errorHandler = require('../utils/middlewares/error-handler.middleware')
 
 const tagColorRoutes = require('../routes/tag-color.routes');
-const statusRoutes = require('../routes/status.routes');
-const roleRoutes = require('../routes/role.routes');
 const userRoutes = require('../routes/user.routes');
 const recipeRoutes = require('../routes/recipe.routes');
 
@@ -18,8 +16,6 @@ module.exports = (app) => {
   // ROUTES
   // app.use('/api/recipes', recipeRoutes);
   app.use('/api/tag-colors', tagColorRoutes);
-  app.use('/api/statuses', statusRoutes);
-  app.use('/api/roles', roleRoutes);
   app.use('/api/users', userRoutes);
   app.use('/api/recipes', recipeRoutes);
 

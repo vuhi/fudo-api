@@ -4,6 +4,7 @@ const { TagSchema, tagValidator } = require('./tag.schema');
 const { IngredientSchema, ingredientValidator } = require('./ingredient.schema');
 const { DirectionSchema, directionValidator } = require('./direction.schema');
 const { OBJECT_ID_REG } = require('../utils/helpers.func');
+const { LEVELS } = require('../utils/config');
 
 const recipeSchema = new mongoose.Schema({
   name: {
@@ -56,6 +57,23 @@ const recipeSchema = new mongoose.Schema({
     maxlength: [500, 'recipe\'s description cannot be more than 255'],
     minlength: [20, 'recipe\'s description should be at least 20 characters']
   },
+  level: {
+    type: String,
+    required: [true, 'Please add recipe\'s level'],
+    uppercase: true,
+    enum: LEVELS
+  },
+  calorie: {
+    type: Number,
+    default: null,
+    min: [0, 'calorie must be at least 0']
+  },
+  numServing: {
+    type: Number,
+    required: [true, 'Please add recipe\'s numServing'],
+    min: [1, 'numServing must be at least 1'],
+    max: [999999999, 'numServing cannot be more than 999999999']
+  },
   prepTime: {
     type: Number,
     required: [true, 'Please add recipe\'s prepTime'],
@@ -73,9 +91,27 @@ const recipeSchema = new mongoose.Schema({
     required: [true, 'Please add recipe\'s readyTime'],
     min: [0, 'readyTime must be at least 0']
   },
-  tags: [TagSchema],
-  ingredients: [IngredientSchema],
-  directions: [DirectionSchema],
+  tags: {
+    type: [TagSchema],
+    validate: {
+      validator: (tags) => tags.length > 0,
+      message: 'recipe should have at least one tag'
+    }
+  },
+  ingredients: {
+    type: [IngredientSchema],
+    validate: {
+      validator: (tags) => tags.length > 0,
+      message: 'recipe should have at least one ingredient'
+    }
+  },
+  directions: {
+    type: [DirectionSchema],
+    validate: {
+      validator: (tags) => tags.length > 0,
+      message: 'recipe should have at least one direction'
+    }
+  },
   isPublic: {
     type: Boolean,
     required: [true, 'Please add recipe\'s isPublic'],
@@ -95,12 +131,15 @@ module.exports.recipeValidator = Joi.object({
     .regex(OBJECT_ID_REG).message('updated by should be a valid object id'),
   image: Joi.string().max(255).uri().allow(null),
   description: Joi.string().required().min(20).max(500),
+  level: Joi.string().required().valid(...LEVELS),
+  calorie: Joi.number().allow(null).min(0),
+  numServing: Joi.number().strict().required().min(1).max(999999999),
   prepTime: Joi.number().strict().required().min(0).max(999999999),
   cookTime: Joi.number().strict().required().min(0).max(999999999),
   readyTime: Joi.number().strict().required().min(0),
-  tags: Joi.array().items(tagValidator).min(1),
-  ingredients: Joi.array().items(ingredientValidator).min(1),
-  directions: Joi.array().items(directionValidator).min(1),
+  tags: Joi.array().required().items(tagValidator).min(1),
+  ingredients: Joi.array().required().items(ingredientValidator).min(1),
+  directions: Joi.array().required().items(directionValidator).min(1),
   isPublic: Joi.boolean().required()
 });
 

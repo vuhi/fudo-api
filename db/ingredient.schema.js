@@ -14,13 +14,13 @@ module.exports.IngredientSchema = new mongoose.Schema({
   },
   unit: {
     type: String,
-    required: [true, 'please add ingredient\'s unit'],
+    default: null,
     trim: true,
     maxlength: [100, 'ingredient\'s unit cannot be more than 100 characters']
   },
   amount: {
     type: String,
-    required: [true, 'please add ingredient\'s amount'],
+    default: null,
     trim: true,
     maxlength: [100, 'ingredient\'s amount cannot be more than 100 characters']
   },
@@ -35,7 +35,7 @@ module.exports.IngredientSchema = new mongoose.Schema({
 module.exports.ingredientValidator = Joi.object({
   index: Joi.number().strict().required().min(1).label('ingredient\'s index'),
   name: Joi.string().required().max(255).label('ingredient\'s name'),
-  unit: Joi.string().required().max(100).label('ingredient\'s unit'),
-  amount: Joi.string().required().max(100).label('ingredient\'s amount'),
+  unit: Joi.string().max(100).allow(null).label('ingredient\'s unit'),
+  amount: Joi.string().max(100).allow(null).label('ingredient\'s amount'),
   tip: Joi.string().max(255).allow(null).label('ingredient\'s tip')
 });

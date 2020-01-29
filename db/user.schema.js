@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const { EMAIL_REG, PASSWORD_REG, OBJECT_ID_REG, USER_NAME_REG } = require('../utils/helpers.func');
+const { ROLES, STATUSES } = require('../utils/config')
 
 module.exports.User = mongoose.model('User', new mongoose.Schema({
   firstName: {
@@ -39,7 +40,7 @@ module.exports.User = mongoose.model('User', new mongoose.Schema({
   },
   password: {
     type: String,
-    // required: [true, 'please add user\'s password'],
+    required: [true, 'please add user\'s password'],
     minlength: [10, 'password should has at least 10 character'],
     match: [
       PASSWORD_REG,
@@ -65,7 +66,7 @@ module.exports.User = mongoose.model('User', new mongoose.Schema({
   },
   createdOn: {
     type: Date,
-    // required: [true, 'Please add user\'s createdOn'],
+    required: [true, 'Please add user\'s createdOn'],
     default: Date.now
   },
   updatedOn: {
@@ -78,13 +79,13 @@ module.exports.User = mongoose.model('User', new mongoose.Schema({
     default: null
   },
   role: {
-    type: mongoose.Schema.Types.ObjectID,
-    ref: 'Role',
+    type: String,
+    enum: ROLES,
     required: [true, 'Please add user\'s role']
   },
   status: {
-    type: mongoose.Schema.Types.ObjectID,
-    ref: 'Status',
+    type: String,
+    enum: STATUSES,
     required: [true, 'Please add user\'s status']
   }
 }));
@@ -105,8 +106,8 @@ module.exports.userValidator = Joi.object({
   updatedOn: Joi.date().timestamp('javascript').allow(null),
   updatedBy: Joi.string().allow(null)
     .regex(OBJECT_ID_REG).message('updated by should be a valid object id'),
-  role: Joi.string()
-    .regex(OBJECT_ID_REG).message('role should be a valid object id'),
-  status: Joi.string()
-    .regex(OBJECT_ID_REG).message('status should be a valid object id')
+  // Mongo validator will check on save for this field, not update.
+  // role & status cannot be updated by normal user
+  role: Joi.string().valid(...ROLES),
+  status: Joi.string().valid(...STATUSES)
 });
