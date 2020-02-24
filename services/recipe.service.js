@@ -1,7 +1,12 @@
 const { Recipe, recipeValidator } = require('../db/recipe.schema');
 const { ErrorResponse } = require('../utils/error-response.class');
+const { DEFAULT_RECIPE_PAGE, DEFAULT_RECIPE_LIMIT } = require('../utils/config');
 
-module.exports.getRecipes = () => Recipe.find();
+module.exports.getRecipes = (page = DEFAULT_RECIPE_PAGE, limit = DEFAULT_RECIPE_LIMIT) =>
+  Recipe.find({ isPublic: true }).sort({ createdOn: 'desc' }).skip((page - 1) * limit).limit(limit)
+    .populate({ path: 'createdBy', select: '-_id userName' })
+    .populate({ path: 'updatedBy', select: '-_id userName' })
+    .populate({ path: 'tags.color', select: '-_id name background text' });
 
 module.exports.getRecipe = (id) => Recipe.findById(id)
   .orFail(new ErrorResponse('no recipe found with the associated id', 404));

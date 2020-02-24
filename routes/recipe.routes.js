@@ -11,17 +11,16 @@ const { ErrorResponse } = require('../utils/error-response.class');
  *  @note: Show only public recipe. Filter by "limit" & "page" (potential "blocked")
  */
 router.get('/all', async (req, res, next) => {
-  // const page = req.query.page;
-  // const limit = req.query.limit;
-  //
-  // if (Number.isNaN(Number(page)) || Number.isNaN(Number(limit))) {
-  //   throw new ErrorResponse('invalid query input!', 400);
-  // }
+  let { page, limit } = req.query;
 
-  // TODO: Find recipes by limit & page from queries param
-  //  only show public recipe, populate data needed
-  // TODO: Add logic to filter any if recipe was blocked
-  const recipes = await recipeService.getRecipes();
+  if (Number.isNaN(Number(page)) || Number.isNaN(Number(limit))) {
+    throw new ErrorResponse('missing or invalid query input!', 400);
+  }
+
+  page = Number.parseInt(page, 10);
+  limit = Number.parseInt(limit, 10);
+
+  const recipes = await recipeService.getRecipes(page, limit);
   resFun(res, 'Success get recipes', recipes);
 });
 

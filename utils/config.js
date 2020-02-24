@@ -28,3 +28,6 @@ module.exports.MEDIUM = MEDIUM;
 module.exports.HARD = HARD;
 module.exports.CHEF = CHEF;
 module.exports.LEVELS = [EASY, MEDIUM, HARD, CHEF];
+
+module.exports.DEFAULT_RECIPE_PAGE = 1;
+module.exports.DEFAULT_RECIPE_LIMIT = 10;
