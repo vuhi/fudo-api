@@ -1,10 +1,15 @@
 const { User, userValidator } = require('../db/user.schema');
 const { ErrorResponse } = require('../utils/error-response.class');
 
-module.exports.getUsers = () => User.find()
+module.exports.getUsers = () => User.find();
 
 module.exports.getUser = (id) => User.findById(id)
-  .orFail(new ErrorResponse('no user found with the associated id', 404))
+  .orFail(new ErrorResponse('no user found with the associated id', 404));
+
+module.exports.getUserByIdentify = (loginIdentify) => User.findOne()
+  .or([{ email: loginIdentify }, { userName: loginIdentify }])
+  .select('+password')
+  .orFail(new ErrorResponse('no user found with the associated identify', 401));
 
 module.exports.createUser = (user) => {
   const result = userValidator.validate(user);

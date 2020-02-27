@@ -38,17 +38,16 @@ router.get('/:id', async (req, res, next) => {
 /**
  *  @path: [POST] api/users
  *  @desc: Create a new user
- *  @auth: ??
- *  @note: ??
+ *  @auth: ADMIN, SUPER_ADMIN only
+ *  @note: Do not use this route to register user
  */
 router.post('', async (req, res, next) => {
   let user = req.body;
   if (isObjectNullOrEmpty(user)) {
     throw new ErrorResponse('payload empty', 400);
   }
-  // TODO: NOT SURE SHOULD USE THIS ROUTE TO REGISTER USER AS WELL?
-  //  check if role & status is valid object in db
-
+  // TODO: check if role & status is valid object in db
+  // user.password = await bcrypt.hash(user.password, 10)
   user = await userService.createUser(user);
   resFun(res, 'Success create user', user);
 });
