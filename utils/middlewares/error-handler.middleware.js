@@ -13,14 +13,14 @@ module.exports = async (err, req, res, next) => {
       originalError = err;
       break;
     case name === MONGO_VALIDATION_ERROR:
-      statusCode = 400
-      message = err.message
-      originalError = err
+      statusCode = 400;
+      message = err.message;
+      originalError = err;
       break;
     case name === ERROR_RESPONSE:
       break;
     default:
-      statusCode = 500
+      statusCode = 500;
       message = err.message;
       originalError = err;
   }

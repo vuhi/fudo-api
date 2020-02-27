@@ -91,5 +91,6 @@ config.env
 .idea/
 
 db/seeder/*
+secrets
 
 

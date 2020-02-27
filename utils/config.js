@@ -5,6 +5,13 @@ dotenv.config({ path: './config.env' });
 module.exports.PORT = process.env.PORT || 3000;
 module.exports.CONNECTION_STRING = process.env.CONNECTION_STRING;
 
+module.exports.PRIVATE_KEY = process.env.PRIVATE_KEY;
+module.exports.PUBLIC_KEY = process.env.PUBLIC_KEY;
+module.exports.TOKEN_AGO = process.env.TOKEN_AGO;
+module.exports.TOKEN_EXPIRE = process.env.TOKEN_EXPIRE;
+module.exports.AUDIENCE = process.env.AUDIENCE;
+module.exports.ISSUER = process.env.ISSUER;
+
 const ACTIVE = 'ACTIVE';
 const BLOCKED = 'BLOCKED';
 module.exports.ACTIVE = ACTIVE;
