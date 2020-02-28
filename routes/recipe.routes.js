@@ -1,14 +1,15 @@
 const router = require('express').Router();
 const recipeService = require('../services/recipe.service');
+const { auth } = require('../utils/middlewares/auth.middleware');
 const { isObjectNullOrEmpty, isObjectId, resFun } = require('../utils/helpers.func');
 const { ErrorResponse } = require('../utils/error-response.class');
 
-// TODO: AUTH
 /**
  *  @path: [GET] api/recipes/all
  *  @desc: Get all recipes
  *  @auth: All
  *  @note: Show only public recipe. Filter by "limit" & "page" (potential "blocked")
+ *  // TODO: WHAT HAPPEN IF ADMIN CALL THIS ROUTE, SHOULD I CREATE A NEW ROUTE TO HANDLE ADMIN CALL???
  */
 router.get('/all', async (req, res, next) => {
   let { page, limit } = req.query;
@@ -29,10 +30,10 @@ router.get('/all', async (req, res, next) => {
  *  @desc: Get all recipes
  *  @auth: All
  *  @note: Show only public recipe (potential "blocked")
+ *    // TODO: Show only public recipe, private recipe only show when user (own recipe) login
+ *    //  all recipes will show if ADMIN or SUPER_ADMIN ???
  */
 router.get('/:id', async (req, res, next) => {
-  // TODO: Show only public recipe, private recipe only show when user (own recipe) login
-  //  all recipes will show if ADMIN or SUPER_ADMIN ???
   const id = req.params.id;
   if (!isObjectId(id)) {
     throw new ErrorResponse('invalid params', 400);
@@ -45,9 +46,9 @@ router.get('/:id', async (req, res, next) => {
 /**
  *  @path: [POST] api/recipes
  *  @desc: Create a recipe
- *  @auth: All, Login Required
+ *  @auth: Login Required
  */
-router.post('', async (req, res, next) => {
+router.post('', auth, async (req, res, next) => {
   let recipe = req.body;
   if (isObjectNullOrEmpty(recipe)) {
     throw new ErrorResponse('payload empty', 400);
@@ -61,9 +62,9 @@ router.post('', async (req, res, next) => {
 /**
  *  @path: [PUT] api/recipes/:id
  *  @desc: Update a recipe
- *  @auth: Owner, ADMIN, SUPER_ADMIN
+ *  @auth: Login Required, Owner, ADMIN, SUPER_ADMIN
  */
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', auth, async (req, res, next) => {
   let recipe = req.body;
   if (isObjectNullOrEmpty(recipe)) {
     throw new ErrorResponse('payload empty', 400);
@@ -84,7 +85,7 @@ router.put('/:id', async (req, res, next) => {
  *  @desc: Delete a recipe
  *  @auth: Owner, ADMIN, SUPER_ADMIN
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', auth, async (req, res, next) => {
   // TODO: What happen to related props? Cascading delete?
   const id = req.params.id;
   if (!isObjectId(id)) {
