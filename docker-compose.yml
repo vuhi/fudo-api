@@ -1,0 +1,26 @@
+version: '3'
+
+services: 
+  fudo-api:
+    container_name: fudo-api
+    image: fudo-api:latest  
+    environment: 
+      - NODE_ENV=production
+    networks: 
+      - fudo-network
+    ports:
+      - 3000:3000
+  # nginx:
+  #   container_name: nginx
+  #   image: nginx
+  #   ports: 
+  #     - 443:443
+  #   environment: 
+  #     - TZ=America/New_York
+  #   volumes: 
+  #     - /etc/localtime:/etc/localtime:ro
+  #   restart: unless_stop
+  #   networks: 
+  #     - fudo-network
+networks: 
+  fudo-network:

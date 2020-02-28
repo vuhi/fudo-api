@@ -6,7 +6,7 @@
   "author": "vuhi",
   "license": "ISC",
   "scripts": {
-    "start": "SET NODE_ENV=production & node index.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest --watch=false",
     "seed": "node ./db/seeder/seeder -i",
