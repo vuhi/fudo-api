@@ -11,7 +11,7 @@ const recipeSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add recipe\'s name'],
     trim: true,
-    maxlength: [255, 'recipe\'s name cannot be more than 255']
+    maxlength: [80, 'recipe\'s name cannot be more than 80']
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectID,
@@ -122,7 +122,7 @@ const recipeSchema = new mongoose.Schema({
 module.exports.recipeValidator = Joi.object({
   _id: Joi.string()
     .regex(OBJECT_ID_REG).message('id should be a valid object id'),
-  name: Joi.string().required().max(255),
+  name: Joi.string().required().max(80),
   createdBy: Joi.string().required()
     .regex(OBJECT_ID_REG).message('created by should be a valid object id'),
   createdOn: Joi.date().required().timestamp('javascript'),
