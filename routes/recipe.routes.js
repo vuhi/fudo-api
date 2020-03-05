@@ -40,6 +40,16 @@ router.get('/:id', async (req, res, next) => {
   }
 
   const recipe = await recipeService.getRecipe(id);
+
+  // Recipe is not public
+  if (!recipe.isPublic) {
+    if (isObjectNullOrEmpty(req.user)) {
+      throw new ErrorResponse('current user are not allow to access the content', 403);
+    } else if (req.user._id !== recipe.createdBy) {
+      throw new ErrorResponse('current user are not allow to access the content', 403);
+    }
+  }
+
   resFun(res, 'Success get recipe', recipe);
 });
 

@@ -10,6 +10,9 @@ module.exports.getRecipes = (page = DEFAULT_RECIPE_PAGE, limit = DEFAULT_RECIPE_
     .populate({ path: 'tags.color', select: '-_id name background text' });
 
 module.exports.getRecipe = (id) => Recipe.findById(id)
+  .populate({ path: 'createdBy', select: '-_id userName firstName lastName' })
+  .populate({ path: 'updatedBy', select: '-_id userName firstName lastName' })
+  .populate({ path: 'tags.color', select: '-_id name background text' })
   .orFail(new ErrorResponse('no recipe found with the associated id', 404));
 
 module.exports.createRecipe = (recipe) => {
